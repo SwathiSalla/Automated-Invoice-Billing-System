@@ -1,18 +1,21 @@
 import pandas as pd
 import mysql.connector
+import os
 from config import DB_CONFIG
 
-# Public direct link to the Online Retail transactional dataset hosted on GitHub
-INTERNET_DATASET_URL = "https://raw.githubusercontent.com/datasets/online-retail/main/data/online-retail.csv"
+DATASET_FILE = "OnlineRetail.csv"
 
-def load_internet_dataset_to_db(limit=200):
-    print(f"Fetching dataset directly from the internet URL...")
+def load_local_dataset_to_db(limit=300):
+    if not os.path.exists(DATASET_FILE):
+        print(f"Error: {DATASET_FILE} not found in project directory.")
+        return
+
+    print(f"Reading dataset from local file: {DATASET_FILE}...")
     try:
-        # Load dataset live from the internet
-        df = pd.read_csv(INTERNET_DATASET_URL)
-        print(f"Successfully downloaded dataset with {len(df)} total transaction records.")
+        df = pd.read_csv(DATASET_FILE, encoding="ISO-8859-1")
+        print(f"Successfully loaded dataset with {len(df)} total transaction records.")
     except Exception as e:
-        print(f"Error fetching internet dataset: {e}")
+        print(f"Error reading dataset: {e}")
         return
 
     # Data Cleaning
@@ -20,7 +23,7 @@ def load_internet_dataset_to_db(limit=200):
     df = df[df['Quantity'] > 0]
     df = df[df['UnitPrice'] > 0]
 
-    # Select records up to the specified limit
+    # Process sample
     df_sample = df.head(limit)
 
     conn = mysql.connector.connect(**DB_CONFIG)
@@ -36,13 +39,11 @@ def load_internet_dataset_to_db(limit=200):
         cust_name = f"Customer_{cust_id}"
         country = str(first_row.get('Country', 'Unknown'))
         
-        # Parse invoice date safely
         try:
             inv_date = pd.to_datetime(first_row['InvoiceDate']).strftime('%Y-%m-%d')
         except:
             inv_date = "2026-03-01"
 
-        # Insert or update customer
         cursor.execute(
             "INSERT INTO customers (customer_id, customer_name, country) VALUES (%s, %s, %s) "
             "ON DUPLICATE KEY UPDATE customer_name=%s",
@@ -59,17 +60,15 @@ def load_internet_dataset_to_db(limit=200):
             items.append((str(row['Description']).strip(), qty, price, line_tot))
 
         subtotal = round(subtotal, 2)
-        tax = round(subtotal * 0.10, 2)  # 10% tax rate
+        tax = round(subtotal * 0.10, 2)
         total = round(subtotal + tax, 2)
 
-        # Insert invoice header
         cursor.execute(
             "INSERT IGNORE INTO invoices (invoice_number, customer_id, invoice_date, subtotal, tax_amount, total_amount) "
             "VALUES (%s, %s, %s, %s, %s, %s)",
             (str(invoice_no), cust_id, inv_date, subtotal, tax, total)
         )
 
-        # Insert line items
         for desc, qty, price, line_tot in items:
             cursor.execute(
                 "INSERT INTO invoice_items (invoice_number, description, quantity, unit_price, line_total) "
@@ -80,7 +79,7 @@ def load_internet_dataset_to_db(limit=200):
     conn.commit()
     cursor.close()
     conn.close()
-    print("Internet dataset successfully stored in MySQL!")
+    print("Dataset records successfully loaded into MySQL!")
 
 if __name__ == "__main__":
-    load_internet_dataset_to_db(200)
+    load_local_dataset_to_db(5000)
