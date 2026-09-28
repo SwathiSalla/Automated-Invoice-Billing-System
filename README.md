@@ -20,6 +20,7 @@
 - **⚡ Automated PDF Engine:** Uses ReportLab to generate dynamic, pixel-perfect invoice receipts automatically.
 - **🗄️ Relational Database Core:** Backed by MySQL for reliable storage of clients, items, transactional ledgers, and billing statuses.
 - **📈 Real-World Dataset Pipeline:** Automatically ingests and cleans the bulk `OnlineRetail` dataset for immediate analytical reporting.
+
 ## 🖼️ Application Preview
 
 <div align="center">
@@ -27,28 +28,29 @@
   <br/><br/>
   <img src="images/invoice.png" alt="Generated PDF Invoice Preview" width="800"/>
 </div>
+
 ---
 
 ## 🏗️ System Architecture
 
 ```text
-       ┌────────────────────────┐
-       │   OnlineRetail.csv     │ (E-Commerce Ingestion)
-       └───────────┬────────────┘
-                   │
-                   ▼
-       ┌────────────────────────┐
-       │   dataset_loader.py    │ (ETL & Cleaning)
-       └───────────┬────────────┘
-                   │
-                   ▼
+        ┌────────────────────────┐
+        │   OnlineRetail.csv     │ (E-Commerce Ingestion)
+        └───────────┬────────────┘
+                    │
+                    ▼
+        ┌────────────────────────┐
+        │   dataset_loader.py    │ (ETL & Cleaning)
+        └───────────┬────────────┘
+                    │
+                    ▼
 ┌──────────────────────────────────────┐
 │        MySQL Database (db_setup)     │
 │  - clients   - invoices   - items    │
 └──────────────────┬───────────────────┘
-                   │
-         ┌─────────┴─────────┐
-         ▼                   ▼
+                    │
+          ┌─────────┴─────────┐
+          ▼                   ▼
 ┌──────────────────┐  ┌──────────────────┐
 │   app.py (UI)    │  │ invoice_generator│
 │ Streamlit Visuals│  │  ReportLab PDFs  │
