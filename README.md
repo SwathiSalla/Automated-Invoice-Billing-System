@@ -27,9 +27,9 @@ No installation or coding is required to view the deployed application.
 
 ### Steps
 
-1. Open the following link:
+1. Open the following link in chrome:
 
-   👉 [**Open Automated Invoice Billing System**](https://automated-invoice-billing-system-ljsufg9hgueydwbkrde5zw.streamlit.app/)
+   👉 https://automated-invoice-billing-system-ljsufg9hgueydwbkrde5zw.streamlit.app/
 
 2. Wait a few seconds for the application to load.
 
