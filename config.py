@@ -1,10 +1,12 @@
 import os
+import streamlit as st
 
 DB_CONFIG = {
-    "host": "localhost",
-    "user": "root",
-    "password": "Swathi@2008", 
-    "database": "billing_system_db"
+    "host": st.secrets["DB_HOST"],
+    "port": st.secrets["DB_PORT"],
+    "user": st.secrets["DB_USER"],
+    "password": st.secrets["DB_PASSWORD"],
+    "database": st.secrets["DB_NAME"],
 }
 
 OUTPUT_DIR = "output_invoices"

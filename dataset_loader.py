@@ -82,4 +82,4 @@ def load_local_dataset_to_db(limit=300):
     print("Dataset records successfully loaded into MySQL!")
 
 if __name__ == "__main__":
-    load_local_dataset_to_db(5000)
+    load_local_dataset_to_db(500)
