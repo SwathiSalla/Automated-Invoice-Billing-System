@@ -3,65 +3,52 @@
 # 🧾 Automated Invoice Generation & Billing Management System
 
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)](https://streamlit.io/)
-[![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
+
+[![MySQL](https://img.shields.io/badge/MySQL--Compatible-TiDB-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.tidbcloud.com/)
+
 [![ReportLab](https://img.shields.io/badge/ReportLab-PDF_Engine-00599C?style=for-the-badge)](https://www.reportlab.com/)
 
-**An end-to-end Capstone Billing & Revenue Analytics Solution**  
-*Processes e-commerce datasets, automates PDF invoice rendering, and delivers live business intelligence.*
+**An end-to-end Invoice Billing & Revenue Analytics Solution**
 
----
+*Processes e-commerce transaction data, automates PDF invoice generation, and provides an interactive billing dashboard.*
+
+[🚀 **Live Demo**](https://automated-invoice-billing-system-ljsufg9hgueydwbkrde5zw.streamlit.app/)
 
 </div>
 
+---
+
 ## 🌟 Key Highlights
 
-- **📊 Dynamic Analytics Dashboard:** Built with Streamlit for real-time tracking of total revenue, invoice counts, and transaction averages.
-- **⚡ Automated PDF Engine:** Uses ReportLab to generate dynamic, pixel-perfect invoice receipts automatically.
-- **🗄️ Relational Database Core:** Backed by MySQL for reliable storage of clients, items, transactional ledgers, and billing statuses.
-- **📈 Real-World Dataset Pipeline:** Automatically ingests and cleans the bulk `OnlineRetail` dataset for immediate analytical reporting.
+- **📊 Dynamic Analytics Dashboard:**  
+  Built with Streamlit to display invoice counts, total revenue, and average invoice values.
 
-## 🌐 How to View the Application
+- **⚡ Automated PDF Invoice Generation:**  
+  Uses ReportLab to generate PDF invoices dynamically from billing data.
 
-No installation or coding is required to view the deployed application.
+- **🗄️ Cloud Database Integration:**  
+  Uses TiDB Cloud, a MySQL-compatible database, to store customers, invoices, and invoice items.
 
-### Steps
+- **📈 Real-World Dataset Pipeline:**  
+  Processes and cleans the `OnlineRetail.csv` dataset and loads transaction data into the database.
 
-1. Open the following link:
+- **🔄 Automated Billing Calculations:**  
+  Calculates subtotals, tax amounts, and total invoice values automatically.
 
-   👉 [**Open Automated Invoice Billing System**](https://automated-invoice-billing-system-ljsufg9hgueydwbkrde5zw.streamlit.app/)
-
-2. Wait a few seconds for the application to load.
-
-3. Once the dashboard appears, you can explore the available features.
-
-4. Use the application's navigation options to:
-   - View billing and revenue statistics
-   - View customer and invoice information
-   - Generate invoices
-   - Download generated PDF invoices
-
-### 💡 Important
-
-- The application can be opened directly in a web browser.
-- No Python installation is required for users viewing the deployed application.
-- No GitHub account is required to view the application.
-- The application is connected to the cloud database, so the required billing data is available online.
-
-### 📱 Supported Devices
-
-The application can be accessed through modern web browsers on:
-
-- 💻 Desktop/Laptop
-- 📱 Mobile
-- 📟 Tablet
+---
 
 ## 🖼️ Application Preview
 
 <div align="center">
-  <img src="images/dashboard.png" alt="Streamlit Dashboard Preview" width="800"/>
-  <br/><br/>
-  <img src="images/invoice.png" alt="Generated PDF Invoice Preview" width="800"/>
+
+<img src="images/dashboard.png" alt="Streamlit Dashboard Preview" width="800"/>
+
+<br/><br/>
+
+<img src="images/invoice.png" alt="Generated PDF Invoice Preview" width="800"/>
+
 </div>
 
 ---
@@ -70,23 +57,29 @@ The application can be accessed through modern web browsers on:
 
 ```text
         ┌────────────────────────┐
-        │   OnlineRetail.csv     │ (E-Commerce Ingestion)
+        │     OnlineRetail.csv   │
+        │   E-Commerce Dataset   │
         └───────────┬────────────┘
                     │
                     ▼
         ┌────────────────────────┐
-        │   dataset_loader.py    │ (ETL & Cleaning)
+        │    dataset_loader.py   │
+        │   Data Cleaning & ETL  │
         └───────────┬────────────┘
                     │
                     ▼
 ┌──────────────────────────────────────┐
-│        MySQL Database (db_setup)     │
-│  - clients   - invoices   - items    │
+│       TiDB Cloud Database            │
+│       MySQL-Compatible               │
+│                                      │
+│  - customers                         │
+│  - invoices                          │
+│  - invoice_items                     │
 └──────────────────┬───────────────────┘
-                    │
-          ┌─────────┴─────────┐
-          ▼                   ▼
-┌──────────────────┐  ┌──────────────────┐
-│   app.py (UI)    │  │ invoice_generator│
-│ Streamlit Visuals│  │  ReportLab PDFs  │
-└──────────────────┘  └──────────────────┘
+                   │
+          ┌────────┴─────────┐
+          ▼                  ▼
+┌──────────────────┐  ┌──────────────────────┐
+│     app.py       │  │ invoice_generator.py │
+│    Streamlit UI  │  │   ReportLab PDFs     │
+└──────────────────┘  └──────────────────────┘
