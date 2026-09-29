@@ -21,6 +21,41 @@
 - **🗄️ Relational Database Core:** Backed by MySQL for reliable storage of clients, items, transactional ledgers, and billing statuses.
 - **📈 Real-World Dataset Pipeline:** Automatically ingests and cleans the bulk `OnlineRetail` dataset for immediate analytical reporting.
 
+## 🌐 How to View the Application
+
+No installation or coding is required to view the deployed application.
+
+### Steps
+
+1. Open the following link:
+
+   👉 [**Open Automated Invoice Billing System**](https://automated-invoice-billing-system-ljsufg9hgueydwbkrde5zw.streamlit.app/)
+
+2. Wait a few seconds for the application to load.
+
+3. Once the dashboard appears, you can explore the available features.
+
+4. Use the application's navigation options to:
+   - View billing and revenue statistics
+   - View customer and invoice information
+   - Generate invoices
+   - Download generated PDF invoices
+
+### 💡 Important
+
+- The application can be opened directly in a web browser.
+- No Python installation is required for users viewing the deployed application.
+- No GitHub account is required to view the application.
+- The application is connected to the cloud database, so the required billing data is available online.
+
+### 📱 Supported Devices
+
+The application can be accessed through modern web browsers on:
+
+- 💻 Desktop/Laptop
+- 📱 Mobile
+- 📟 Tablet
+
 ## 🖼️ Application Preview
 
 <div align="center">
