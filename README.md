@@ -29,7 +29,7 @@ No installation or coding is required to view the deployed application.
 
 1. Open the following link:
 
-   👉 https://automated-invoice-billing-system-ljsufg9hgueydwbkrde5zw.streamlit.app/
+   👉 [https://automated-invoice-billing-system-ljsufg9hgueydwbkrde5zw.streamlit.app/](https://lh47zd8vfa2jbsqvuu7zhe.streamlit.app/)
 
 2. Wait a few seconds for the application to load.
 
