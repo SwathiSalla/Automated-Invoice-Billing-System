@@ -27,13 +27,13 @@ st.markdown("""
     .main-title {
         font-size: 2.2rem;
         font-weight: 700;
-        color: #0F172A;
+        color: var(--text-color) !important;
         margin-bottom: 0.2rem;
     }
 
     .sub-title {
         font-size: 0.95rem;
-        color: #64748B;
+        color: var(--secondary-text-color) !important;
         margin-bottom: 1.2rem;
     }
 
