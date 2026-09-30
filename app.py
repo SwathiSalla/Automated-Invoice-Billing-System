@@ -27,15 +27,25 @@ st.markdown("""
     .main-title {
     font-size: 2.2rem;
     font-weight: 700;
-    color: var(--st-text-color) !important;
+    color: #0F172A !important;
     margin-bottom: 0.2rem;
 }
 
 .sub-title {
     font-size: 0.95rem;
-    color: var(--st-text-color) !important;
-    opacity: 0.75;
+    color: #475569 !important;
     margin-bottom: 1.2rem;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    .main-title {
+        color: #F8FAFC !important;
+    }
+
+    .sub-title {
+        color: #CBD5E1 !important;
+    }
 }
     }
 
