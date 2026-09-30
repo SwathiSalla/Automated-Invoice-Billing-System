@@ -25,16 +25,18 @@ st.markdown("""
     }
 
     .main-title {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: var(--text-color) !important;
-        margin-bottom: 0.2rem;
-    }
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--st-text-color) !important;
+    margin-bottom: 0.2rem;
+}
 
-    .sub-title {
-        font-size: 0.95rem;
-        color: var(--secondary-text-color) !important;
-        margin-bottom: 1.2rem;
+.sub-title {
+    font-size: 0.95rem;
+    color: var(--st-text-color) !important;
+    opacity: 0.75;
+    margin-bottom: 1.2rem;
+}
     }
 
     /* Left Sidebar Styling */
