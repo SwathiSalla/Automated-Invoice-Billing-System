@@ -6,7 +6,10 @@ from config import DB_CONFIG, OUTPUT_DIR
 from billing_system import BillingManager
 
 
-# Page Configuration
+# ============================================================
+# PAGE CONFIGURATION
+# ============================================================
+
 st.set_page_config(
     page_title="Enterprise Billing & Analytics System",
     page_icon="🧾",
@@ -15,41 +18,20 @@ st.set_page_config(
 )
 
 
-# Enterprise Modern UI & Sidebar Styling
+# ============================================================
+# CUSTOM CSS
+# ============================================================
+
 st.markdown("""
 <style>
+
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
     }
 
-    .main-title {
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: #0F172A !important;
-    margin-bottom: 0.2rem;
-}
-
-.sub-title {
-    font-size: 0.95rem;
-    color: #475569 !important;
-    margin-bottom: 1.2rem;
-}
-
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-    .main-title {
-        color: #F8FAFC !important;
-    }
-
-    .sub-title {
-        color: #CBD5E1 !important;
-    }
-}
-    }
-
-    /* Left Sidebar Styling */
+    /* Sidebar */
     section[data-testid="stSidebar"] {
         background-color: #0F172A !important;
     }
@@ -58,7 +40,7 @@ st.markdown("""
         color: #F8FAFC !important;
     }
 
-    /* Custom Sidebar Header Box */
+    /* Sidebar Brand */
     .sidebar-brand {
         background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
         padding: 1.25rem;
@@ -81,7 +63,7 @@ st.markdown("""
         margin: 0;
     }
 
-    /* Status Badge in Sidebar */
+    /* System Status */
     .status-badge {
         background-color: #1E293B;
         border-left: 4px solid #10B981;
@@ -91,7 +73,7 @@ st.markdown("""
         margin-top: 2rem;
     }
 
-    /* Metric Summary Pills */
+    /* Summary Cards */
     .summary-pill {
         background-color: #F8FAFC;
         border-left: 4px solid #2563EB;
@@ -101,8 +83,8 @@ st.markdown("""
         color: #1E293B;
     }
 
-    /* Primary Action Buttons */
-    .stButton>button {
+    /* Buttons */
+    .stButton > button {
         background-color: #2563EB;
         color: white;
         border-radius: 8px;
@@ -112,37 +94,46 @@ st.markdown("""
         transition: all 0.2s ease;
     }
 
-    .stButton>button:hover {
+    .stButton > button:hover {
         background-color: #1D4ED8;
     }
+
 </style>
 """, unsafe_allow_html=True)
 
 
+# ============================================================
+# DATABASE CONNECTION
+# ============================================================
+
 def get_db_connection():
     try:
         return mysql.connector.connect(**DB_CONFIG)
+
     except Exception as e:
         st.error(f"Database Connection Error: {e}")
         return None
 
 
-# Header Section
-st.markdown(
-    '<div class="main-title">🧾 Automated Invoice Generation & Billing Management System</div>',
-    unsafe_allow_html=True
-)
+# ============================================================
+# MAIN HEADER
+# ============================================================
 
-st.markdown(
-    '<div class="sub-title">Automated Retail Data Ingestion, Relational Management, and Dynamic PDF Generation</div>',
-    unsafe_allow_html=True
+st.title("🧾 Automated Invoice Generation & Billing Management System")
+
+st.caption(
+    "Automated Retail Data Ingestion, Relational Management, and Dynamic PDF Generation"
 )
 
 st.divider()
 
 
-# Upgraded Left Sidebar Section
+# ============================================================
+# SIDEBAR
+# ============================================================
+
 with st.sidebar:
+
     st.markdown("""
         <div class="sidebar-brand">
             <h3>🧾 Retail Billing POS</h3>
@@ -173,15 +164,21 @@ with st.sidebar:
     """, unsafe_allow_html=True)
 
 
-# -------------------------------------------------------------
-# PAGE 1: DASHBOARD ANALYTICS
-# -------------------------------------------------------------
+# ============================================================
+# DASHBOARD ANALYTICS
+# ============================================================
+
 if menu == "📊 Dashboard Analytics":
 
     conn = get_db_connection()
 
     if conn:
+
         cursor = conn.cursor(dictionary=True)
+
+        # ----------------------------------------------------
+        # Dashboard Metrics
+        # ----------------------------------------------------
 
         cursor.execute(
             "SELECT COUNT(*) as total_inv, "
@@ -192,8 +189,15 @@ if menu == "📊 Dashboard Analytics":
 
         metrics = cursor.fetchone()
 
-        cursor.execute("SELECT COUNT(*) as total_cust FROM customers")
+        cursor.execute(
+            "SELECT COUNT(*) as total_cust FROM customers"
+        )
+
         cust_count = cursor.fetchone()['total_cust']
+
+        # ----------------------------------------------------
+        # Metric Columns
+        # ----------------------------------------------------
 
         c1, c2, c3, c4 = st.columns(4)
 
@@ -223,22 +227,32 @@ if menu == "📊 Dashboard Analytics":
 
         st.divider()
 
+        # ----------------------------------------------------
+        # Invoice Registry
+        # ----------------------------------------------------
+
         st.subheader("📋 Ingested Invoice Master Registry")
 
         query = """
-        SELECT i.invoice_number AS `Invoice No`, 
-               c.customer_name AS `Customer`, 
-               c.country AS `Country`,
-               i.invoice_date AS `Date`, 
-               CONCAT('$', FORMAT(i.subtotal, 2)) AS `Subtotal`, 
-               CONCAT('$', FORMAT(i.tax_amount, 2)) AS `Tax (10%)`, 
-               CONCAT('$', FORMAT(i.total_amount, 2)) AS `Total Due`
+        SELECT 
+            i.invoice_number AS `Invoice No`, 
+            c.customer_name AS `Customer`, 
+            c.country AS `Country`,
+            i.invoice_date AS `Date`, 
+            CONCAT('$', FORMAT(i.subtotal, 2)) AS `Subtotal`, 
+            CONCAT('$', FORMAT(i.tax_amount, 2)) AS `Tax (10%)`, 
+            CONCAT('$', FORMAT(i.total_amount, 2)) AS `Total Due`
         FROM invoices i 
-        JOIN customers c ON i.customer_id = c.customer_id
+        JOIN customers c 
+            ON i.customer_id = c.customer_id
         ORDER BY i.invoice_date DESC
         """
 
         df_invoices = pd.read_sql(query, conn)
+
+        # ----------------------------------------------------
+        # Search
+        # ----------------------------------------------------
 
         search_term = st.text_input(
             "🔍 Search Invoices by Number or Customer",
@@ -246,17 +260,28 @@ if menu == "📊 Dashboard Analytics":
         )
 
         if search_term:
+
             df_invoices = df_invoices[
-                df_invoices['Invoice No'].astype(str).str.contains(
+                df_invoices['Invoice No']
+                .astype(str)
+                .str.contains(
                     search_term,
-                    case=False
+                    case=False,
+                    na=False
                 )
                 |
-                df_invoices['Customer'].astype(str).str.contains(
+                df_invoices['Customer']
+                .astype(str)
+                .str.contains(
                     search_term,
-                    case=False
+                    case=False,
+                    na=False
                 )
             ]
+
+        # ----------------------------------------------------
+        # Invoice Table
+        # ----------------------------------------------------
 
         st.dataframe(
             df_invoices,
@@ -268,9 +293,10 @@ if menu == "📊 Dashboard Analytics":
         conn.close()
 
 
-# -------------------------------------------------------------
-# PAGE 2: GENERATE & VIEW PDF INVOICES
-# -------------------------------------------------------------
+# ============================================================
+# PDF GENERATION STUDIO
+# ============================================================
+
 elif menu == "📄 PDF Generation Studio":
 
     st.subheader("📄 PDF Generation Studio")
@@ -281,7 +307,9 @@ elif menu == "📄 PDF Generation Studio":
 
         cursor = conn.cursor()
 
-        cursor.execute("SELECT invoice_number FROM invoices")
+        cursor.execute(
+            "SELECT invoice_number FROM invoices"
+        )
 
         invoice_list = [
             row[0]
@@ -296,6 +324,7 @@ elif menu == "📄 PDF Generation Studio":
             col1, col2 = st.columns([2, 1])
 
             with col1:
+
                 selected_invoice = st.selectbox(
                     "Select Target Invoice Number",
                     invoice_list
@@ -328,6 +357,10 @@ elif menu == "📄 PDF Generation Studio":
                     with open(pdf_path, "rb") as f:
                         pdf_bytes = f.read()
 
+                    # ------------------------------------------------
+                    # Download PDF
+                    # ------------------------------------------------
+
                     st.download_button(
                         label="📥 Download PDF Document",
                         data=pdf_bytes,
@@ -335,7 +368,10 @@ elif menu == "📄 PDF Generation Studio":
                         mime="application/pdf"
                     )
 
-                    # Native Streamlit PDF Preview
+                    # ------------------------------------------------
+                    # PDF Preview
+                    # ------------------------------------------------
+
                     st.subheader("📄 Invoice Preview")
 
                     st.pdf(
@@ -344,44 +380,64 @@ elif menu == "📄 PDF Generation Studio":
                     )
 
         else:
-            st.warning("No invoices found in database.")
+
+            st.warning(
+                "No invoices found in database."
+            )
 
 
-# -------------------------------------------------------------
-# PAGE 3: CREATE MANUAL INVOICE (POS COUNTER)
-# -------------------------------------------------------------
+# ============================================================
+# POS BILLING COUNTER
+# ============================================================
+
 elif menu == "🛒 POS Billing Counter":
 
-    st.subheader("🛒 Interactive Retail POS Checkout Counter")
+    st.subheader(
+        "🛒 Interactive Retail POS Checkout Counter"
+    )
+
+    # --------------------------------------------------------
+    # Initialize Cart
+    # --------------------------------------------------------
 
     if "cart_items" not in st.session_state:
         st.session_state.cart_items = []
 
-    st.markdown("##### 👤 Customer & Order Metadata")
+    # --------------------------------------------------------
+    # Customer Information
+    # --------------------------------------------------------
+
+    st.markdown(
+        "##### 👤 Customer & Order Metadata"
+    )
 
     with st.container():
 
         c1, c2, c3, c4 = st.columns(4)
 
         with c1:
+
             inv_no = st.text_input(
                 "Invoice Number",
                 value="INV-5001"
             )
 
         with c2:
+
             cust_id = st.text_input(
                 "Customer ID",
                 value="CUST-808"
             )
 
         with c3:
+
             cust_name = st.text_input(
                 "Customer Name",
                 value="Global Enterprise Solutions"
             )
 
         with c4:
+
             country = st.text_input(
                 "Country",
                 value="United States"
@@ -389,19 +445,27 @@ elif menu == "🛒 POS Billing Counter":
 
     st.divider()
 
-    st.markdown("##### 📦 Add Products to Active Cart")
+    # --------------------------------------------------------
+    # Add Products
+    # --------------------------------------------------------
+
+    st.markdown(
+        "##### 📦 Add Products to Active Cart"
+    )
 
     col_item1, col_item2, col_item3, col_item4 = st.columns(
         [3, 1, 1, 1]
     )
 
     with col_item1:
+
         item_desc = st.text_input(
             "Item Description / Name",
             placeholder="e.g. Wireless Ergonomic Mouse"
         )
 
     with col_item2:
+
         item_qty = st.number_input(
             "Quantity",
             min_value=1,
@@ -410,6 +474,7 @@ elif menu == "🛒 POS Billing Counter":
         )
 
     with col_item3:
+
         item_price = st.number_input(
             "Unit Price ($)",
             min_value=0.01,
@@ -426,15 +491,17 @@ elif menu == "🛒 POS Billing Counter":
 
             if item_desc.strip():
 
-                st.session_state.cart_items.append({
-                    "Description": item_desc.strip(),
-                    "Quantity": int(item_qty),
-                    "Unit Price ($)": float(item_price),
-                    "Line Total ($)": round(
-                        int(item_qty) * float(item_price),
-                        2
-                    )
-                })
+                st.session_state.cart_items.append(
+                    {
+                        "Description": item_desc.strip(),
+                        "Quantity": int(item_qty),
+                        "Unit Price ($)": float(item_price),
+                        "Line Total ($)": round(
+                            int(item_qty) * float(item_price),
+                            2
+                        )
+                    }
+                )
 
                 st.toast(
                     f"Added '{item_desc}' to bill!",
@@ -442,13 +509,20 @@ elif menu == "🛒 POS Billing Counter":
                 )
 
             else:
+
                 st.warning(
                     "Please enter a valid item description."
                 )
 
+    # --------------------------------------------------------
+    # Cart
+    # --------------------------------------------------------
+
     if st.session_state.cart_items:
 
-        st.markdown("##### 🧾 Scanned / Billed Items Table")
+        st.markdown(
+            "##### 🧾 Scanned / Billed Items Table"
+        )
 
         df_cart = pd.DataFrame(
             st.session_state.cart_items
@@ -459,6 +533,10 @@ elif menu == "🛒 POS Billing Counter":
             use_container_width=True,
             hide_index=True
         )
+
+        # ----------------------------------------------------
+        # Calculate Totals
+        # ----------------------------------------------------
 
         subtotal = sum(
             item["Line Total ($)"]
@@ -475,35 +553,51 @@ elif menu == "🛒 POS Billing Counter":
             2
         )
 
+        # ----------------------------------------------------
+        # Summary
+        # ----------------------------------------------------
+
         m1, m2, m3 = st.columns(3)
 
         with m1:
+
             st.markdown(
-                f'<div class="summary-pill">'
-                f'Subtotal: ${subtotal:,.2f}'
-                f'</div>',
+                f"""
+                <div class="summary-pill">
+                    Subtotal: ${subtotal:,.2f}
+                </div>
+                """,
                 unsafe_allow_html=True
             )
 
         with m2:
+
             st.markdown(
-                f'<div class="summary-pill">'
-                f'Tax (10%): ${tax:,.2f}'
-                f'</div>',
+                f"""
+                <div class="summary-pill">
+                    Tax (10%): ${tax:,.2f}
+                </div>
+                """,
                 unsafe_allow_html=True
             )
 
         with m3:
+
             st.markdown(
-                f'<div class="summary-pill" '
-                f'style="border-left-color: #16A34A; '
-                f'color: #16A34A;">'
-                f'Total Due: ${total:,.2f}'
-                f'</div>',
+                f"""
+                <div class="summary-pill"
+                     style="border-left-color: #16A34A; color: #16A34A;">
+                    Total Due: ${total:,.2f}
+                </div>
+                """,
                 unsafe_allow_html=True
             )
 
         st.write("")
+
+        # ----------------------------------------------------
+        # Order Buttons
+        # ----------------------------------------------------
 
         btn_col1, btn_col2 = st.columns([1, 4])
 
@@ -520,12 +614,18 @@ elif menu == "🛒 POS Billing Counter":
 
                     cursor = conn.cursor()
 
+                    # --------------------------------------------
+                    # Customer Insert / Update
+                    # --------------------------------------------
+
                     cursor.execute(
-                        "INSERT INTO customers "
-                        "(customer_id, customer_name, country) "
-                        "VALUES (%s, %s, %s) "
-                        "ON DUPLICATE KEY UPDATE "
-                        "customer_name=%s",
+                        """
+                        INSERT INTO customers
+                        (customer_id, customer_name, country)
+                        VALUES (%s, %s, %s)
+                        ON DUPLICATE KEY UPDATE
+                        customer_name=%s
+                        """,
                         (
                             cust_id,
                             cust_name,
@@ -534,13 +634,33 @@ elif menu == "🛒 POS Billing Counter":
                         )
                     )
 
+                    # --------------------------------------------
+                    # Invoice Insert / Update
+                    # --------------------------------------------
+
                     cursor.execute(
-                        "INSERT INTO invoices "
-                        "(invoice_number, customer_id, invoice_date, "
-                        "subtotal, tax_amount, total_amount) "
-                        "VALUES (%s, %s, CURDATE(), %s, %s, %s) "
-                        "ON DUPLICATE KEY UPDATE "
-                        "total_amount=%s",
+                        """
+                        INSERT INTO invoices
+                        (
+                            invoice_number,
+                            customer_id,
+                            invoice_date,
+                            subtotal,
+                            tax_amount,
+                            total_amount
+                        )
+                        VALUES
+                        (
+                            %s,
+                            %s,
+                            CURDATE(),
+                            %s,
+                            %s,
+                            %s
+                        )
+                        ON DUPLICATE KEY UPDATE
+                        total_amount=%s
+                        """,
                         (
                             inv_no,
                             cust_id,
@@ -551,13 +671,25 @@ elif menu == "🛒 POS Billing Counter":
                         )
                     )
 
+                    # --------------------------------------------
+                    # Invoice Items
+                    # --------------------------------------------
+
                     for item in st.session_state.cart_items:
 
                         cursor.execute(
-                            "INSERT INTO invoice_items "
-                            "(invoice_number, description, quantity, "
-                            "unit_price, line_total) "
-                            "VALUES (%s, %s, %s, %s, %s)",
+                            """
+                            INSERT INTO invoice_items
+                            (
+                                invoice_number,
+                                description,
+                                quantity,
+                                unit_price,
+                                line_total
+                            )
+                            VALUES
+                            (%s, %s, %s, %s, %s)
+                            """,
                             (
                                 inv_no,
                                 item["Description"],
@@ -567,10 +699,18 @@ elif menu == "🛒 POS Billing Counter":
                             )
                         )
 
+                    # --------------------------------------------
+                    # Commit
+                    # --------------------------------------------
+
                     conn.commit()
 
                     cursor.close()
                     conn.close()
+
+                    # --------------------------------------------
+                    # Generate PDF
+                    # --------------------------------------------
 
                     manager = BillingManager()
 
